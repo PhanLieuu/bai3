@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+<title>Document</title>
+</head>
+<body>
+    <%- include("../part/header") %>
+<div class="container">
+    <h1>Danh sách sinh viên </h1>
+    <a type="button" class="btn btn-success btn-lg my-3" href="/student/add">Add new student</a>
+    <form class="d-flex mb-3">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 400px">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Tên sinh viên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Edit Modal</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <%
+            for(let i=0;i<students.length;i++){%>
+                <tr>
+                    <td id="ten<%= students[i]._id %>"><%= students[i].ten %></td>
+                    <td id="email<%= students[i]._id %>"><%= students[i].email %></td>
+                    <td id="sdt<%= students[i]._id %>"><%= students[i].sdt %></td>
+                    <td><button class="btn btn-info editModal" id="<%= students[i]._id %>" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit Modal</button></td>
+                    <td><a class="btn btn-info" href="/student/edit/<%= students[i]._id %>">Edit</a></td>
+                    <td>
+                        <form action="/student/delete/<%= students[i]._id %>?_method=DELETE" method="POST">
+                           
+                            <button type="submit" class="btn btn-danger"> Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <%}
+        %>
+    </table>
+</div>
+ <!-- Modal -->
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form action="" method="POST" id="modal_edit_form">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Student</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+            <div class="modal-body">
+                    <div class="form-floating mb-3 ">
+                        <input type="text" class="form-control" id="ten" name="ten" placeholder="Tên" value="">
+                        <label for="floatingInput">Tên</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="">
+                        <label for="floatingPassword">Old</label>
+                    </div>
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" id="sdt" name="sdt" placeholder="SDT" value="">
+                        <label for="floatingPassword">SDT</label>
+                    </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" >Save changes</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+      const editModal=document.getElementsByClassName('editModal')
+      for(let i=0;i<editModal.length;i++){
+          editModal[i].addEventListener('click',show)
+      }
+      function show(){
+        const id=this.id
+        document.getElementById('ten').value=document.getElementById('ten'+id).innerHTML
+        document.getElementById('email').value=document.getElementById('email'+id).innerHTML
+        document.getElementById('sdt').value=document.getElementById('sdt'+id).innerHTML
+       
+        const form_action='/student/edit/'+id+'?_method=PUT'
+        document.getElementById('modal_edit_form').action=form_action
+
+      }
+</script>
+<%- include("../part/footer") %>
+</body>
+</html>
